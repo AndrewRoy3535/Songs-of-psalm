@@ -6,12 +6,18 @@ import {
   Image,
   Text,
 } from 'react-native';
-import React from 'react';
+import React, {useContext} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Slider from '@react-native-community/slider';
+import {Contextprovider} from '../../Context/Context';
 
 const SongsScreen = ({navigation}) => {
+  const context = useContext(Contextprovider);
+
+  const {name} = context;
+  console.log(name);
+
   return (
     <SafeAreaView style={styles.playerContainer}>
       <View style={styles.go_back_frm_player}>
@@ -60,16 +66,18 @@ const SongsScreen = ({navigation}) => {
         </View>
       </View>
       <View style={styles.player_bottom_container}>
-        <TouchableOpacity style={styles.touchable_opacity}>
+        {/* <TouchableOpacity style={styles.touchable_opacity}>
           <Ionicons name="heart" size={30} color="#D3D3D3" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity style={styles.touchable_opacity}>
           <Ionicons name="repeat" size={30} color="#D3D3D3" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.touchable_opacity}>
           <Ionicons name="musical-note" size={30} color="#D3D3D3" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.touchable_opacity}>
+        <TouchableOpacity
+          style={styles.touchable_opacity}
+          onPress={() => navigation.navigate('Playlist')}>
           <Ionicons name="list" size={30} color="#D3D3D3" />
         </TouchableOpacity>
       </View>
