@@ -6,11 +6,27 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  FlatList,
 } from 'react-native';
-import React from 'react';
+import React, {useContext} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {Contextprovider} from '../../Context/Context';
 
 const PlaylistScreen = ({navigation}) => {
+  const context = useContext(Contextprovider);
+  const {audio} = context;
+
+  const renderItem = item => (
+    // console.log(el),
+    <TouchableOpacity style={styles.playlist_listview}>
+      <AntDesign name="play" size={33} color="#5e8d6a" />
+      <View style={styles.palylist_title_container}>
+        <Text style={styles.playlist_song_title}>{item.item.title}</Text>
+        <Text style={styles.playlist_song_album}>Songs of psalm</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView style={styles.playlist_container}>
       <View style={styles.playlist_header}>
@@ -26,18 +42,23 @@ const PlaylistScreen = ({navigation}) => {
             color="#fff"
             style={styles.palylist_search_icon}
           />
-          <TextInput placeholder="Search" />
+          <TextInput placeholder="Search" placeholderTextColor="#fff" />
         </View>
       </View>
-      <ScrollView style={styles.playlist_body}>
+      <FlatList
+        data={audio}
+        renderItem={renderItem}
+        keyExtractor={item => item._id}
+      />
+      {/* <ScrollView style={styles.playlist_body}>
         <TouchableOpacity style={styles.playlist_listview}>
-          <AntDesign name="play" size={33} color="#5e8d6a" />
-          <View style={styles.palylist_title_container}>
-            <Text style={styles.playlist_song_title}>Song Title</Text>
-            <Text style={styles.playlist_song_album}>Songs of psalm</Text>
-          </View>
-        </TouchableOpacity>
-      </ScrollView>
+            <AntDesign name="play" size={33} color="#5e8d6a" />
+            <View style={styles.palylist_title_container}>
+              <Text style={styles.playlist_song_title}>{filename}</Text>
+              <Text style={styles.playlist_song_album}>Songs of psalm</Text>
+            </View>
+          </TouchableOpacity>;
+      </ScrollView> */}
     </SafeAreaView>
   );
 };
@@ -60,14 +81,14 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   playlist_search_container: {
-    // borderWidth: 1,
+    borderWidth: 1,
     borderRadius: 50,
+    borderColor: 'grey',
     width: '70%',
     height: 45,
     flexDirection: 'row',
     alignItems: 'center',
     margin: 3,
-    backgroundColor: 'grey',
   },
   palylist_search_icon: {
     marginHorizontal: 10,
