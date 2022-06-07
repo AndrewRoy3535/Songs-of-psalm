@@ -50,15 +50,6 @@ const PlaylistScreen = ({navigation}) => {
         renderItem={renderItem}
         keyExtractor={item => item._id}
       />
-      {/* <ScrollView style={styles.playlist_body}>
-        <TouchableOpacity style={styles.playlist_listview}>
-            <AntDesign name="play" size={33} color="#5e8d6a" />
-            <View style={styles.palylist_title_container}>
-              <Text style={styles.playlist_song_title}>{filename}</Text>
-              <Text style={styles.playlist_song_album}>Songs of psalm</Text>
-            </View>
-          </TouchableOpacity>;
-      </ScrollView> */}
     </SafeAreaView>
   );
 };
