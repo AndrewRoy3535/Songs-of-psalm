@@ -10,22 +10,49 @@ import {
 } from 'react-native';
 import React, {useContext} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Contextprovider} from '../../Context/Context';
+import TrackPlayer, {State, Event} from 'react-native-track-player';
 
 const PlaylistScreen = ({navigation}) => {
   const context = useContext(Contextprovider);
-  const {audio} = context;
+  const {audio, currentTrack, togglePlay, togglePlaybtn, setState} = context;
 
-  const renderItem = item => (
+  const renderItem = ({item, index}) => (
     // console.log(el),
-    <TouchableOpacity style={styles.playlist_listview}>
-      <AntDesign name="play" size={33} color="#5e8d6a" />
+    <TouchableOpacity
+      style={styles.playlist_listview}
+      onPress={() => playbyId(item._id, index)}>
+      <Ionicons
+        name={
+          item._id === currentTrack._id && togglePlaybtn
+            ? 'ios-pause-circle'
+            : 'ios-play-circle'
+        }
+        size={33}
+        color="#5e8d6a"
+      />
       <View style={styles.palylist_title_container}>
-        <Text style={styles.playlist_song_title}>{item.item.title}</Text>
+        <Text style={styles.playlist_song_title}>{item.title}</Text>
         <Text style={styles.playlist_song_album}>Songs of psalm</Text>
       </View>
     </TouchableOpacity>
   );
+
+  // console.log(audio);
+
+  const playbyId = async (id, index) => {
+    if (id === currentTrack._id) {
+      return togglePlay();
+    }
+
+    if (id !== currentTrack._id) {
+      await TrackPlayer.stop();
+      setState({...context, togglePlaybtn: true});
+      await TrackPlayer.skip(index);
+      return await TrackPlayer.play(index);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.playlist_container}>
@@ -47,7 +74,8 @@ const PlaylistScreen = ({navigation}) => {
       </View>
       <FlatList
         data={audio}
-        renderItem={renderItem}
+        // renderItem={renderItem}
+        renderItem={({item, index}) => renderItem({item, index})}
         keyExtractor={item => item._id}
       />
     </SafeAreaView>

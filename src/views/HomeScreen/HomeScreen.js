@@ -4,24 +4,41 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import React, {useContext} from 'react';
 import Button from '../../component/Button/Button';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {Contextprovider} from '../../Context/Context';
 
 const HomeScreen = ({navigation}) => {
+  const context = useContext(Contextprovider);
+  const {isLoading, currentTrack} = context;
+
+  const RenderLoader = () => {
+    return (
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <ActivityIndicator size="small" color="#5e8d6a" />
+        <Text style={styles.loadingText}>Wait while loading...</Text>
+      </View>
+    );
+  };
   return (
     <SafeAreaView style={styles.homeContainer}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Wellcome to songs of psalm</Text>
       </View>
       <View style={styles.btnContainer}>
+        <View style={styles.loadingContainer}>
+          {isLoading ? <RenderLoader /> : <Text> </Text>}
+        </View>
         <Button
           title="Songs of psalm"
           IonicIconName="musical-note-outline"
           IonicIconSize={35}
           btnDescripton="Tap to view songs"
           onPress={() => navigation.navigate('Songs')}
+          Disable={isLoading ? true : false}
         />
         <Button
           title="Book of Psalm"
@@ -73,7 +90,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 4,
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
   rateContainer: {
     flex: 1,
@@ -89,4 +106,10 @@ const styles = StyleSheet.create({
     width: '35%',
   },
   rateText: {color: 'grey', fontSize: 13},
+  loadingContainer: {
+    width: '90%',
+    height: 25,
+    padding: 5,
+  },
+  loadingText: {color: '#5e8d6a', fontSize: 11, marginLeft: 5},
 });

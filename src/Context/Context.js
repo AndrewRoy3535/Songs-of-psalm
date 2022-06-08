@@ -12,8 +12,12 @@ export function Context({children}) {
   const [state, setState] = useState({
     audio: [],
     togglePlaybtn: false,
-    currentTrack: {},
+    currentTrack: null,
+    isLoading: true,
   });
+
+  const {audio, togglePlaybtn, currentTrack, isLoading} = state;
+
   const fetchData = async () => {
     const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
     const result = await sanity.fetch(query);
@@ -22,15 +26,19 @@ export function Context({children}) {
 
   useEffect(() => {
     fetchData();
-    playerSetup();
-    return () => {
-      fetchData();
-    };
+    return () => fetchData();
   }, []);
+
+  useEffect(() => {
+    if (audio.length) {
+      playerSetup();
+      setState({...state, isLoading: false});
+    }
+  }, [audio]);
 
   const playerSetup = async () => {
     await TrackPlayer.setupPlayer();
-    await TrackPlayer.add(sounds);
+    await TrackPlayer.add(state.audio);
   };
 
   const togglePlay = async () => {
@@ -42,6 +50,25 @@ export function Context({children}) {
     }
     setState({...state, togglePlaybtn: !togglePlaybtn});
   };
+
+  useTrackPlayerEvents(
+    [Event.PlaybackTrackChanged, Event.PlaybackQueueEnded],
+    async event => {
+      if (
+        event.type === Event.PlaybackTrackChanged &&
+        event.nextTrack != null
+      ) {
+        const track = await TrackPlayer.getTrack(event.nextTrack);
+        const newTrack = track || {};
+        setState({...state, currentTrack: newTrack});
+      }
+
+      if (event.type === Event.PlaybackQueueEnded) {
+        await TrackPlayer.stop();
+        setState({...state, togglePlaybtn: false});
+      }
+    },
+  );
 
   const playNext = async () => {
     await TrackPlayer.skipToNext();
@@ -68,32 +95,13 @@ export function Context({children}) {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  useTrackPlayerEvents(
-    [Event.PlaybackTrackChanged, Event.PlaybackQueueEnded],
-    async event => {
-      if (
-        event.type === Event.PlaybackTrackChanged &&
-        event.nextTrack != null
-      ) {
-        const track = await TrackPlayer.getTrack(event.nextTrack);
-        const newTrack = track || {};
-        setState({...state, currentTrack: newTrack});
-      }
-
-      if (event.type === Event.PlaybackQueueEnded) {
-        await TrackPlayer.stop();
-        setState({...state, togglePlaybtn: false});
-      }
-    },
-  );
-
-  const {audio, togglePlaybtn, currentTrack} = state;
   return (
     <Contextprovider.Provider
       value={{
         audio,
         togglePlaybtn,
         currentTrack,
+        isLoading,
         setState,
         formatTime,
         totalTime,
@@ -102,6 +110,7 @@ export function Context({children}) {
         playPrevious,
         onSliderComplete,
         togglePlay,
+        sounds,
       }}>
       {children}
     </Contextprovider.Provider>

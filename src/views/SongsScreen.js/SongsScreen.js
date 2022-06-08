@@ -6,17 +6,12 @@ import {
   Image,
   Text,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Slider from '@react-native-community/slider';
 import {Contextprovider} from '../../Context/Context';
-import TrackPlayer, {
-  State,
-  useTrackPlayerEvents,
-  Event,
-  useProgress,
-} from 'react-native-track-player';
+import {useProgress} from 'react-native-track-player';
 
 // array of audios
 
@@ -28,12 +23,12 @@ const SongsScreen = ({navigation}) => {
     setState,
     formatTime,
     totalTime,
-    playerSetup,
     playNext,
     playPrevious,
     onSliderComplete,
     togglePlay,
     currentTrack,
+    isLoading,
   } = context;
 
   let progress = useProgress();
@@ -56,7 +51,7 @@ const SongsScreen = ({navigation}) => {
         </View>
         <View style={styles.slider_container}>
           <Text style={styles.song_title}>
-            {currentTrack.title || 'Songs of psalm'}
+            {currentTrack === null ? 'Songs of psalm' : currentTrack.title}
           </Text>
           <Slider
             style={{width: '100%', height: 25}}
@@ -79,20 +74,21 @@ const SongsScreen = ({navigation}) => {
         </View>
         <View style={styles.player_menu_container}>
           <TouchableOpacity onPress={playPrevious}>
-            <Ionicons name="play-skip-back-outline" size={35} color="#5e8d6a" />
+            <Ionicons name="play-skip-back-outline" size={45} color="#5e8d6a" />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            disabled={isLoading ? true : false}
+            onPress={() => togglePlay()}>
             <Ionicons
               name={togglePlaybtn ? 'ios-pause-circle' : 'ios-play-circle'}
-              size={75}
+              size={85}
               color="#5e8d6a"
-              onPress={() => togglePlay()}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={playNext}>
             <Ionicons
               name="play-skip-forward-outline"
-              size={35}
+              size={45}
               color="#5e8d6a"
             />
           </TouchableOpacity>
