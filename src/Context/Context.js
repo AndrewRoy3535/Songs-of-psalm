@@ -12,16 +12,25 @@ export function Context({children}) {
   const [state, setState] = useState({
     audio: [],
     togglePlaybtn: false,
-    currentTrack: null,
+    currentTrack: {},
     isLoading: true,
+    audioFilter: [],
+    audioSearch: '',
   });
 
-  const {audio, togglePlaybtn, currentTrack, isLoading} = state;
+  const {
+    audio,
+    togglePlaybtn,
+    currentTrack,
+    isLoading,
+    audioFilter,
+    audioSearch,
+  } = state;
 
   const fetchData = async () => {
     const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
     const result = await sanity.fetch(query);
-    setState({...state, audio: result});
+    setState({...state, audio: result, audioFilter: result});
   };
 
   useEffect(() => {
@@ -36,11 +45,13 @@ export function Context({children}) {
     }
   }, [audio]);
 
+  // Setup player for the first time
   const playerSetup = async () => {
     await TrackPlayer.setupPlayer();
-    await TrackPlayer.add(state.audio);
+    await TrackPlayer.add(audioFilter);
   };
 
+  // Play or puse song by toggling...
   const togglePlay = async () => {
     const playingState = await TrackPlayer.getState();
     if (playingState !== State.Playing) {
@@ -51,6 +62,7 @@ export function Context({children}) {
     setState({...state, togglePlaybtn: !togglePlaybtn});
   };
 
+  // state events listener
   useTrackPlayerEvents(
     [Event.PlaybackTrackChanged, Event.PlaybackQueueEnded],
     async event => {
@@ -95,6 +107,21 @@ export function Context({children}) {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  // play by song by index
+  const playbyId = async (id, index) => {
+    if (id === currentTrack._id) {
+      return togglePlay();
+    }
+
+    if (id !== currentTrack._id) {
+      await TrackPlayer.stop();
+      setState({...state, togglePlaybtn: true});
+      await TrackPlayer.skip(index);
+      console.log(id);
+      return await TrackPlayer.play(index);
+    }
+  };
+
   return (
     <Contextprovider.Provider
       value={{
@@ -102,6 +129,8 @@ export function Context({children}) {
         togglePlaybtn,
         currentTrack,
         isLoading,
+        audioFilter,
+        audioSearch,
         setState,
         formatTime,
         totalTime,
@@ -110,7 +139,7 @@ export function Context({children}) {
         playPrevious,
         onSliderComplete,
         togglePlay,
-        sounds,
+        playbyId,
       }}>
       {children}
     </Contextprovider.Provider>
@@ -118,30 +147,3 @@ export function Context({children}) {
 }
 
 export default Context;
-
-const sounds = [
-  {
-    id: 1,
-    url: 'https://cdn.pixabay.com/audio/2021/05/25/audio_83acc1c7f0.mp3',
-    title: 'Song 1',
-    artist: 'Artist 1',
-    artwork:
-      'https://i.scdn.co/image/ab67616d0000b2735c9b9b9b9b9b9b9b9b9b9b9b9',
-  },
-  {
-    id: 2,
-    url: 'https://cdn.pixabay.com/audio/2022/01/31/audio_1682adb609.mp3',
-    title: 'Song 2',
-    artist: 'Artist 2',
-    artwork:
-      'https://i.scdn.co/image/ab67616d0000b2735c9b9b9b9b9b9b9b9b9b9b9b9',
-  },
-  {
-    id: 3,
-    url: 'https://cdn.pixabay.com/audio/2022/05/10/audio_b92b719f0e.mp3',
-    title: 'Song 3',
-    artist: 'Artist 3',
-    artwork:
-      'https://i.scdn.co/image/ab67616d0000b2735c9b9b9b9b9b9b9b9b9b9b9bsdsd9',
-  },
-];

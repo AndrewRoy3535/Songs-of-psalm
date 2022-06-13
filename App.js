@@ -6,6 +6,7 @@ import SongsScreen from './src/views/SongsScreen.js/SongsScreen';
 import BookScreen from './src/views/BookScreen/BookScreen';
 import AboutScreen from './src/views/AboutScreen/AboutScreen';
 import PlaylistScreen from './src/views/PlaylistScreen/PlaylistScreen';
+import Lyrics from './src/component/Lyrics/Lyrics';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Context from './src/Context/Context';
 
@@ -25,6 +26,7 @@ const App = () => {
           <Stack.Screen name="Books" component={BookScreen} />
           <Stack.Screen name="About" component={AboutScreen} />
           <Stack.Screen name="Playlist" component={PlaylistScreen} />
+          <Stack.Screen name="Lyrics" component={Lyrics} />
         </Stack.Navigator>
       </NavigationContainer>
     </Context>

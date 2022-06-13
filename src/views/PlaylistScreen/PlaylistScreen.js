@@ -7,50 +7,113 @@ import {
   TextInput,
   ScrollView,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useContext} from 'react';
+import React, {useContext, useMemo, useCallback} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Contextprovider} from '../../Context/Context';
-import TrackPlayer, {State, Event} from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
 
 const PlaylistScreen = ({navigation}) => {
   const context = useContext(Contextprovider);
-  const {audio, currentTrack, togglePlay, togglePlaybtn, setState} = context;
+  const {
+    audio,
+    currentTrack,
+    togglePlaybtn,
+    playbyId,
+    audioFilter,
+    setState,
+    audioSearch,
+  } = context;
 
-  const renderItem = ({item, index}) => (
-    // console.log(el),
+  // console.log(audioFilter, 'audioFilter');
+
+  // const renderItem = ({item, index}) => (
+  //   <TouchableOpacity
+  //     style={styles.playlist_listview}
+  //     onPress={() => playbyId(item._id, index)}>
+  //     <Ionicons
+  //       name={
+  //         item._id === currentTrack._id && togglePlaybtn
+  //           ? 'ios-pause-circle'
+  //           : 'ios-play-circle'
+  //       }
+  //       size={33}
+  //       color={item._id === currentTrack._id ? '#5e8d6a' : '#d3d3d3'}
+  //     />
+  //     <View style={styles.palylist_title_container}>
+  //       <Text style={styles.playlist_song_title}>{item.title}</Text>
+  //       <Text style={styles.playlist_song_album}>
+  //         নবী দাউদের গান | {item.songNo}
+  //       </Text>
+  //     </View>
+  //   </TouchableOpacity>
+  // );
+  const renderItem = item => (
     <TouchableOpacity
       style={styles.playlist_listview}
-      onPress={() => playbyId(item._id, index)}>
+      onPress={() => playAudioById(item)}>
       <Ionicons
         name={
-          item._id === currentTrack._id && togglePlaybtn
+          item.item._id === currentTrack._id && togglePlaybtn
             ? 'ios-pause-circle'
             : 'ios-play-circle'
         }
         size={33}
-        color="#5e8d6a"
+        color={item.item._id === currentTrack._id ? '#5e8d6a' : '#d3d3d3'}
       />
       <View style={styles.palylist_title_container}>
-        <Text style={styles.playlist_song_title}>{item.title}</Text>
-        <Text style={styles.playlist_song_album}>Songs of psalm</Text>
+        <Text style={styles.playlist_song_title}>{item.item.title}</Text>
+        <Text style={styles.playlist_song_album}>
+          নবী দাউদের গান | {item.item.songNo}
+        </Text>
       </View>
     </TouchableOpacity>
   );
 
-  // console.log(audio);
+  // const memoizedValue = useMemo(() => renderItem, [audio]);
+  // const memoizedValue = useCallback(item => renderItem(item), [audioFilter]);
 
-  const playbyId = async (id, index) => {
-    if (id === currentTrack._id) {
-      return togglePlay();
+  const playAudioById = async item => {
+    //check if the Track was added
+    var list = await TrackPlayer.getQueue();
+    let selectedIndex = 0;
+    let selectedTrack = list.find((track, index) => {
+      if (track._id == item.item._id) {
+        selectedIndex = index;
+        setState({...context, togglePlaybtn: true});
+        return true;
+      }
+    });
+    if (selectedTrack == undefined) {
+      //not added then add to the queue
+      await TrackPlayer.add({
+        id: item.item._id,
+        url: encodeURI(item.url),
+        title: item.item.title,
+      });
+      list = await TrackPlayer.getQueue();
+      selectedIndex = list.length - 1;
     }
+    // skip to selected index then play
+    await TrackPlayer.skip(selectedIndex);
+    await TrackPlayer.play();
+  };
 
-    if (id !== currentTrack._id) {
-      await TrackPlayer.stop();
-      setState({...context, togglePlaybtn: true});
-      await TrackPlayer.skip(index);
-      return await TrackPlayer.play(index);
+  const onSearchEnter = async text => {
+    if (text) {
+      newData = audio.filter(item => {
+        const itemData = item.songNo
+          ? item.songNo.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+        // return itemData.includes(textData);
+      });
+      setState({...context, audioFilter: newData, audioSearch: text});
+    } else {
+      setState({...context, audioFilter: audio, audioSearch: text});
     }
   };
 
@@ -69,13 +132,24 @@ const PlaylistScreen = ({navigation}) => {
             color="#fff"
             style={styles.palylist_search_icon}
           />
-          <TextInput placeholder="Search" placeholderTextColor="#fff" />
+          <TextInput
+            placeholder="Search"
+            placeholderTextColor="#fff"
+            style={{color: '#fff'}}
+            value={audioSearch}
+            onChangeText={text => onSearchEnter(text)}
+          />
         </View>
       </View>
       <FlatList
-        data={audio}
-        // renderItem={renderItem}
-        renderItem={({item, index}) => renderItem({item, index})}
+        showsVerticalScrollIndicator={false}
+        // data={audio}
+        data={audioFilter}
+        // renderItem={({item, index}) => renderItem({item, index})}
+        renderItem={item => renderItem(item)}
+        // renderItem={memoizedValue}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={15}
         keyExtractor={item => item._id}
       />
     </SafeAreaView>

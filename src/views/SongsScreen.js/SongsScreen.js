@@ -18,9 +18,7 @@ import {useProgress} from 'react-native-track-player';
 const SongsScreen = ({navigation}) => {
   const context = useContext(Contextprovider);
   const {
-    audio,
     togglePlaybtn,
-    setState,
     formatTime,
     totalTime,
     playNext,
@@ -50,9 +48,11 @@ const SongsScreen = ({navigation}) => {
           />
         </View>
         <View style={styles.slider_container}>
-          <Text style={styles.song_title}>
-            {currentTrack === null ? 'Songs of psalm' : currentTrack.title}
-          </Text>
+          {isLoading == false ? (
+            <Text style={styles.song_title}>{currentTrack.title}</Text>
+          ) : (
+            <Text style={styles.song_title}> নবী দাউদের গান</Text>
+          )}
           <Slider
             style={{width: '100%', height: 25}}
             minimumValue={0}
@@ -98,8 +98,10 @@ const SongsScreen = ({navigation}) => {
         <TouchableOpacity style={styles.touchable_opacity}>
           <Ionicons name="repeat" size={30} color="#D3D3D3" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.touchable_opacity}>
-          <Ionicons name="musical-note" size={30} color="#D3D3D3" />
+        <TouchableOpacity
+          style={styles.touchable_opacity}
+          onPress={() => navigation.navigate('Lyrics')}>
+          <Ionicons name="musical-note" size={30} color="#d3d3d3" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.touchable_opacity}
