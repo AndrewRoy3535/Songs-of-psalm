@@ -4,6 +4,7 @@ import TrackPlayer, {
   State,
   Event,
   useTrackPlayerEvents,
+  RepeatMode,
 } from 'react-native-track-player';
 
 export const Contextprovider = createContext();
@@ -16,6 +17,8 @@ export function Context({children}) {
     isLoading: true,
     audioFilter: [],
     audioSearch: '',
+    repeat: 'off',
+    book: [],
   });
 
   const {
@@ -25,13 +28,22 @@ export function Context({children}) {
     isLoading,
     audioFilter,
     audioSearch,
+    repeat,
+    book,
   } = state;
 
-  const fetchData = async () => {
+  // async function fetchData() {
+  //   const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
+  //   const result = await sanity.fetch(query);
+  //   setState({...state, audio: result, audioFilter: result});
+  // }
+  async function fetchData() {
     const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
+    const query1 = `*[_type == "bookOfpsalm"] {_id, title, bookNo, bookDescription} | order(bookNo)`;
     const result = await sanity.fetch(query);
-    setState({...state, audio: result, audioFilter: result});
-  };
+    const result1 = await sanity.fetch(query1);
+    setState({...state, audio: result, audioFilter: result, book: result1});
+  }
 
   useEffect(() => {
     fetchData();
@@ -46,13 +58,13 @@ export function Context({children}) {
   }, [audio]);
 
   // Setup player for the first time
-  const playerSetup = async () => {
+  async function playerSetup() {
     await TrackPlayer.setupPlayer();
     await TrackPlayer.add(audioFilter);
-  };
+  }
 
   // Play or puse song by toggling...
-  const togglePlay = async () => {
+  async function togglePlay() {
     const playingState = await TrackPlayer.getState();
     if (playingState !== State.Playing) {
       await TrackPlayer.play();
@@ -60,7 +72,7 @@ export function Context({children}) {
       await TrackPlayer.pause();
     }
     setState({...state, togglePlaybtn: !togglePlaybtn});
-  };
+  }
 
   // state events listener
   useTrackPlayerEvents(
@@ -82,45 +94,89 @@ export function Context({children}) {
     },
   );
 
-  const playNext = async () => {
+  async function playNext() {
     await TrackPlayer.skipToNext();
-  };
+  }
 
-  const playPrevious = async () => {
+  async function playPrevious() {
     await TrackPlayer.skipToPrevious();
-  };
+  }
 
-  const onSliderComplete = async value => {
+  async function onSliderComplete(value) {
     await TrackPlayer.seekTo(value);
-  };
+  }
 
   // format time for audio
-  const formatTime = time => {
+  function formatTime(time) {
     let minutes = Math.floor(time / 60);
     let seconds = Math.floor(time - minutes * 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
+  }
   // total time count for audio
-  const totalTime = time => {
+  function totalTime(time) {
     let minutes = Math.floor(time / 60);
     let seconds = Math.floor(time - minutes * 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
+  }
 
   // play by song by index
-  const playbyId = async (id, index) => {
-    if (id === currentTrack._id) {
-      return togglePlay();
-    }
+  async function playbyId(item) {
+    //check if the Track was added
+    var list = await TrackPlayer.getQueue();
+    let selectedIndex = 0;
+    list.find((track, index) => {
+      if (track._id == item.item._id) {
+        selectedIndex = index;
+        setState({...state, togglePlaybtn: true});
+        return true;
+      }
+    });
+    // skip to selected index then play
+    await TrackPlayer.skip(selectedIndex);
+    await TrackPlayer.play();
+  }
 
-    if (id !== currentTrack._id) {
-      await TrackPlayer.stop();
-      setState({...state, togglePlaybtn: true});
-      await TrackPlayer.skip(index);
-      console.log(id);
-      return await TrackPlayer.play(index);
+  // search audio
+  async function onSearchEnter(text) {
+    if (text) {
+      newData = audio.filter(item => {
+        const itemData = item.songNo
+          ? item.songNo.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setState({...state, audioFilter: newData, audioSearch: text});
+    } else {
+      setState({...state, audioFilter: audio, audioSearch: text});
     }
-  };
+  }
+
+  function repeatMode() {
+    if (repeat === 'off') {
+      TrackPlayer.setRepeatMode(RepeatMode.Track);
+      setState({...state, repeat: 'track'});
+    }
+    if (repeat === 'track') {
+      TrackPlayer.setRepeatMode(RepeatMode.Queue);
+      setState({...state, repeat: 'all'});
+    }
+    if (repeat === 'all') {
+      TrackPlayer.setRepeatMode(RepeatMode.Off);
+      setState({...state, repeat: 'off'});
+    }
+  }
+  function shuffleIcon() {
+    if (repeat == 'off') {
+      return 'repeat-off';
+    }
+    if (repeat == 'track') {
+      return 'repeat-once';
+    }
+    if (repeat == 'all') {
+      return 'repeat';
+    }
+  }
 
   return (
     <Contextprovider.Provider
@@ -131,6 +187,8 @@ export function Context({children}) {
         isLoading,
         audioFilter,
         audioSearch,
+        repeat,
+        book,
         setState,
         formatTime,
         totalTime,
@@ -140,6 +198,9 @@ export function Context({children}) {
         onSliderComplete,
         togglePlay,
         playbyId,
+        repeatMode,
+        shuffleIcon,
+        onSearchEnter,
       }}>
       {children}
     </Contextprovider.Provider>

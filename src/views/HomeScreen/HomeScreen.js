@@ -11,9 +11,9 @@ import Button from '../../component/Button/Button';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Contextprovider} from '../../Context/Context';
 
-const HomeScreen = ({navigation}) => {
+function HomeScreen({navigation}) {
   const context = useContext(Contextprovider);
-  const {isLoading, currentTrack} = context;
+  const {isLoading} = context;
 
   const RenderLoader = () => {
     return (
@@ -36,7 +36,7 @@ const HomeScreen = ({navigation}) => {
           title="Songs of psalm"
           IonicIconName="musical-note-outline"
           IonicIconSize={35}
-          btnDescripton="Tap to view songs"
+          btnDescripton="Tap to listen songs"
           onPress={() => navigation.navigate('Songs')}
           Disable={isLoading ? true : false}
         />
@@ -44,7 +44,7 @@ const HomeScreen = ({navigation}) => {
           title="Book of Psalm"
           IonicIconName="book-outline"
           IonicIconSize={35}
-          btnDescripton="Tap to view books"
+          btnDescripton="Tap to read books"
           onPress={() => navigation.navigate('Books')}
         />
         <Button
@@ -63,7 +63,7 @@ const HomeScreen = ({navigation}) => {
       </View>
     </SafeAreaView>
   );
-};
+}
 
 export default HomeScreen;
 

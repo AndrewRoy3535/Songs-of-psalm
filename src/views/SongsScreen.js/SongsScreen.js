@@ -9,13 +9,12 @@ import {
 import React, {useContext} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Slider from '@react-native-community/slider';
 import {Contextprovider} from '../../Context/Context';
 import {useProgress} from 'react-native-track-player';
 
-// array of audios
-
-const SongsScreen = ({navigation}) => {
+function SongsScreen({navigation}) {
   const context = useContext(Contextprovider);
   const {
     togglePlaybtn,
@@ -27,6 +26,10 @@ const SongsScreen = ({navigation}) => {
     togglePlay,
     currentTrack,
     isLoading,
+    repeat,
+    setState,
+    repeatMode,
+    shuffleIcon,
   } = context;
 
   let progress = useProgress();
@@ -43,7 +46,7 @@ const SongsScreen = ({navigation}) => {
       <View style={styles.main_player_container}>
         <View style={styles.player_art_img_container}>
           <Image
-            source={require('../../assets/images/album_art.jpg')}
+            source={require('../../assets/images/album_art_1.jpg')}
             style={styles.player_art_img}
           />
         </View>
@@ -60,7 +63,7 @@ const SongsScreen = ({navigation}) => {
             value={progress.position}
             minimumTrackTintColor="#FFFFFF"
             maximumTrackTintColor="#D3D3D3"
-            thumbTintColor="#5e8d6a"
+            thumbTintColor="#1db954"
             onSlidingComplete={value => onSliderComplete(value)}
           />
           <View style={styles.song_duration_container}>
@@ -74,44 +77,57 @@ const SongsScreen = ({navigation}) => {
         </View>
         <View style={styles.player_menu_container}>
           <TouchableOpacity onPress={playPrevious}>
-            <Ionicons name="play-skip-back-outline" size={45} color="#5e8d6a" />
+            <Ionicons name="play-skip-back-sharp" size={45} color="#d3d3d3" />
           </TouchableOpacity>
           <TouchableOpacity
             disabled={isLoading ? true : false}
             onPress={() => togglePlay()}>
             <Ionicons
-              name={togglePlaybtn ? 'ios-pause-circle' : 'ios-play-circle'}
+              name={
+                togglePlaybtn
+                  ? 'ios-pause-circle-sharp'
+                  : 'ios-play-circle-sharp'
+              }
               size={85}
-              color="#5e8d6a"
+              // color="#5e8d6a"
+              color="#fff"
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={playNext}>
             <Ionicons
-              name="play-skip-forward-outline"
+              name="play-skip-forward-sharp"
               size={45}
-              color="#5e8d6a"
+              color="#d3d3d3"
             />
           </TouchableOpacity>
         </View>
       </View>
       <View style={styles.player_bottom_container}>
-        <TouchableOpacity style={styles.touchable_opacity}>
-          <Ionicons name="repeat" size={30} color="#D3D3D3" />
+        <TouchableOpacity style={styles.touchable_opacity} onPress={repeatMode}>
+          <MaterialCommunityIcons
+            name={`${shuffleIcon()}`}
+            size={31}
+            color={repeat === 'off' ? '#d3d3d3' : '#1db954'}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.touchable_opacity}
           onPress={() => navigation.navigate('Lyrics')}>
-          <Ionicons name="musical-note" size={30} color="#d3d3d3" />
+          <Ionicons name="document-text" size={29} color="#d3d3d3" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.touchable_opacity}
           onPress={() => navigation.navigate('Playlist')}>
-          <Ionicons name="list" size={30} color="#D3D3D3" />
+          <MaterialCommunityIcons
+            name="playlist-music"
+            size={31}
+            color="#D3D3D3"
+          />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
-};
+}
 
 export default SongsScreen;
 
@@ -138,9 +154,10 @@ const styles = StyleSheet.create({
   },
 
   go_back_frm_player: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center',
     // backgroundColor: 'red',
+    paddingVertical: 7,
   },
 
   main_player_container: {
@@ -195,7 +212,7 @@ const styles = StyleSheet.create({
   },
 
   player_bottom_container: {
-    borderTopWidth: 0.5,
+    borderTopWidth: 0.3,
     borderColor: '#D3D3D3',
     flex: 1,
     flexDirection: 'row',

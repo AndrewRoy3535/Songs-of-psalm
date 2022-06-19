@@ -13,9 +13,8 @@ import React, {useContext, useMemo, useCallback} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Contextprovider} from '../../Context/Context';
-import TrackPlayer from 'react-native-track-player';
 
-const PlaylistScreen = ({navigation}) => {
+function PlaylistScreen({navigation}) {
   const context = useContext(Contextprovider);
   const {
     audio,
@@ -25,97 +24,39 @@ const PlaylistScreen = ({navigation}) => {
     audioFilter,
     setState,
     audioSearch,
+    onSearchEnter,
   } = context;
 
-  // console.log(audioFilter, 'audioFilter');
-
-  // const renderItem = ({item, index}) => (
-  //   <TouchableOpacity
-  //     style={styles.playlist_listview}
-  //     onPress={() => playbyId(item._id, index)}>
-  //     <Ionicons
-  //       name={
-  //         item._id === currentTrack._id && togglePlaybtn
-  //           ? 'ios-pause-circle'
-  //           : 'ios-play-circle'
-  //       }
-  //       size={33}
-  //       color={item._id === currentTrack._id ? '#5e8d6a' : '#d3d3d3'}
-  //     />
-  //     <View style={styles.palylist_title_container}>
-  //       <Text style={styles.playlist_song_title}>{item.title}</Text>
-  //       <Text style={styles.playlist_song_album}>
-  //         নবী দাউদের গান | {item.songNo}
-  //       </Text>
-  //     </View>
-  //   </TouchableOpacity>
-  // );
-  const renderItem = item => (
-    <TouchableOpacity
-      style={styles.playlist_listview}
-      onPress={() => playAudioById(item)}>
-      <Ionicons
-        name={
-          item.item._id === currentTrack._id && togglePlaybtn
-            ? 'ios-pause-circle'
-            : 'ios-play-circle'
-        }
-        size={33}
-        color={item.item._id === currentTrack._id ? '#5e8d6a' : '#d3d3d3'}
-      />
-      <View style={styles.palylist_title_container}>
-        <Text style={styles.playlist_song_title}>{item.item.title}</Text>
-        <Text style={styles.playlist_song_album}>
-          নবী দাউদের গান | {item.item.songNo}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+  function renderItem(item) {
+    return (
+      <TouchableOpacity
+        style={styles.playlist_listview}
+        onPress={() => playbyId(item)}>
+        <Ionicons
+          name={
+            item.item._id === currentTrack._id && togglePlaybtn
+              ? 'ios-pause-circle'
+              : 'ios-play-circle'
+          }
+          size={33}
+          color={item.item._id === currentTrack._id ? '#1db954' : '#d3d3d3'}
+        />
+        <View style={styles.palylist_title_container}>
+          <Text style={styles.playlist_song_title}>{item.item.title}</Text>
+          <Text style={styles.playlist_song_album}>
+            নবী দাউদের গান | {item.item.songNo}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
 
   // const memoizedValue = useMemo(() => renderItem, [audio]);
   // const memoizedValue = useCallback(item => renderItem(item), [audioFilter]);
 
-  const playAudioById = async item => {
-    //check if the Track was added
-    var list = await TrackPlayer.getQueue();
-    let selectedIndex = 0;
-    let selectedTrack = list.find((track, index) => {
-      if (track._id == item.item._id) {
-        selectedIndex = index;
-        setState({...context, togglePlaybtn: true});
-        return true;
-      }
-    });
-    if (selectedTrack == undefined) {
-      //not added then add to the queue
-      await TrackPlayer.add({
-        id: item.item._id,
-        url: encodeURI(item.url),
-        title: item.item.title,
-      });
-      list = await TrackPlayer.getQueue();
-      selectedIndex = list.length - 1;
-    }
-    // skip to selected index then play
-    await TrackPlayer.skip(selectedIndex);
-    await TrackPlayer.play();
-  };
-
-  const onSearchEnter = async text => {
-    if (text) {
-      newData = audio.filter(item => {
-        const itemData = item.songNo
-          ? item.songNo.toUpperCase()
-          : ''.toUpperCase();
-        const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-        // return itemData.includes(textData);
-      });
-      setState({...context, audioFilter: newData, audioSearch: text});
-    } else {
-      setState({...context, audioFilter: audio, audioSearch: text});
-    }
-  };
+  function keyExtractor(item) {
+    return item._id;
+  }
 
   return (
     <SafeAreaView style={styles.playlist_container}>
@@ -143,18 +84,14 @@ const PlaylistScreen = ({navigation}) => {
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
-        // data={audio}
         data={audioFilter}
-        // renderItem={({item, index}) => renderItem({item, index})}
         renderItem={item => renderItem(item)}
-        // renderItem={memoizedValue}
         removeClippedSubviews={true}
-        maxToRenderPerBatch={15}
-        keyExtractor={item => item._id}
+        keyExtractor={keyExtractor}
       />
     </SafeAreaView>
   );
-};
+}
 
 export default PlaylistScreen;
 
