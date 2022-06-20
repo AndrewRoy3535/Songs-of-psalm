@@ -76,11 +76,12 @@ function PlaylistScreen({navigation}) {
           <TextInput
             placeholder="Search"
             placeholderTextColor="#fff"
-            style={{color: '#fff'}}
+            style={{color: '#fff', width: '85%'}}
             value={audioSearch}
             onChangeText={text => onSearchEnter(text)}
           />
         </View>
+        <View style={styles.emptyContainer}></View>
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -101,8 +102,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#171717',
   },
   playlist_header: {
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   palylist_header_touchable_opacity: {
     // borderWidth: 1,
@@ -110,18 +113,24 @@ const styles = StyleSheet.create({
     padding: 7,
     borderRadius: 50,
   },
+  emptyContainer: {
+    width: '17%',
+    height: '100%',
+    // backgroundColor: '#fff',
+  },
   playlist_search_container: {
-    borderWidth: 1,
+    width: '55%',
+    height: 40,
+    backgroundColor: '#1db954',
+    justifyContent: 'center',
     borderRadius: 50,
     borderColor: 'grey',
-    width: '70%',
-    height: 45,
     flexDirection: 'row',
     alignItems: 'center',
     margin: 3,
   },
   palylist_search_icon: {
-    marginHorizontal: 10,
+    marginHorizontal: 5,
   },
   playlist_body: {
     flex: 10,

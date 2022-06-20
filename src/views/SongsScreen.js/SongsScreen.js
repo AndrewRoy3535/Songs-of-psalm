@@ -5,8 +5,9 @@ import {
   TouchableOpacity,
   Image,
   Text,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -28,11 +29,109 @@ function SongsScreen({navigation}) {
     isLoading,
     repeat,
     setState,
+    audio,
     repeatMode,
+    playerSetup,
     shuffleIcon,
   } = context;
 
   let progress = useProgress();
+
+  // useEffect(() => {
+  //   if (audio.length) {
+  //     playerSetup();
+  //     setState({...context, isLoading: false});
+  //   }
+  // }, [audio]);
+
+  function MainPlayer() {
+    return (
+      <>
+        <View style={styles.main_player_container}>
+          <View style={styles.player_art_img_container}>
+            <Image
+              source={require('../../assets/images/album_art_1.jpg')}
+              style={styles.player_art_img}
+            />
+          </View>
+          <View style={styles.slider_container}>
+            <Text style={styles.song_title}>
+              {currentTrack.title || 'নবী দাউদের গান'}
+            </Text>
+            <Slider
+              style={{width: '100%', height: 25}}
+              minimumValue={0}
+              maximumValue={progress.duration}
+              value={progress.position}
+              minimumTrackTintColor="#FFFFFF"
+              maximumTrackTintColor="#D3D3D3"
+              thumbTintColor="#1db954"
+              onSlidingComplete={value => onSliderComplete(value)}
+            />
+            <View style={styles.song_duration_container}>
+              <Text style={styles.song_duration}>
+                {totalTime(progress.duration)}
+              </Text>
+              <Text style={styles.song_duration}>
+                {formatTime(progress.position)}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.player_menu_container}>
+            <TouchableOpacity onPress={playPrevious}>
+              <Ionicons name="play-skip-back-sharp" size={45} color="#d3d3d3" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              // disabled={isLoading ? true : false}
+              onPress={() => togglePlay()}>
+              <Ionicons
+                name={
+                  togglePlaybtn
+                    ? 'ios-pause-circle-sharp'
+                    : 'ios-play-circle-sharp'
+                }
+                size={85}
+                // color="#5e8d6a"
+                color="#fff"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={playNext}>
+              <Ionicons
+                name="play-skip-forward-sharp"
+                size={45}
+                color="#d3d3d3"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.player_bottom_container}>
+          <TouchableOpacity
+            style={styles.touchable_opacity}
+            onPress={repeatMode}>
+            <MaterialCommunityIcons
+              name={`${shuffleIcon()}`}
+              size={31}
+              color={repeat === 'off' ? '#d3d3d3' : '#1db954'}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.touchable_opacity}
+            onPress={() => navigation.navigate('Lyrics')}>
+            <Ionicons name="document-text" size={29} color="#d3d3d3" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.touchable_opacity}
+            onPress={() => navigation.navigate('Playlist')}>
+            <MaterialCommunityIcons
+              name="playlist-music"
+              size={31}
+              color="#D3D3D3"
+            />
+          </TouchableOpacity>
+        </View>
+      </>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.playerContainer}>
@@ -43,88 +142,13 @@ function SongsScreen({navigation}) {
           <AntDesign name="left" size={25} color="#D3D3D3" />
         </TouchableOpacity>
       </View>
-      <View style={styles.main_player_container}>
-        <View style={styles.player_art_img_container}>
-          <Image
-            source={require('../../assets/images/album_art_1.jpg')}
-            style={styles.player_art_img}
-          />
+      {isLoading ? (
+        <View style={styles.loading_container}>
+          <ActivityIndicator size="large" color="#1db954" />
         </View>
-        <View style={styles.slider_container}>
-          {isLoading == false ? (
-            <Text style={styles.song_title}>{currentTrack.title}</Text>
-          ) : (
-            <Text style={styles.song_title}> নবী দাউদের গান</Text>
-          )}
-          <Slider
-            style={{width: '100%', height: 25}}
-            minimumValue={0}
-            maximumValue={progress.duration}
-            value={progress.position}
-            minimumTrackTintColor="#FFFFFF"
-            maximumTrackTintColor="#D3D3D3"
-            thumbTintColor="#1db954"
-            onSlidingComplete={value => onSliderComplete(value)}
-          />
-          <View style={styles.song_duration_container}>
-            <Text style={styles.song_duration}>
-              {totalTime(progress.duration)}
-            </Text>
-            <Text style={styles.song_duration}>
-              {formatTime(progress.position)}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.player_menu_container}>
-          <TouchableOpacity onPress={playPrevious}>
-            <Ionicons name="play-skip-back-sharp" size={45} color="#d3d3d3" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            disabled={isLoading ? true : false}
-            onPress={() => togglePlay()}>
-            <Ionicons
-              name={
-                togglePlaybtn
-                  ? 'ios-pause-circle-sharp'
-                  : 'ios-play-circle-sharp'
-              }
-              size={85}
-              // color="#5e8d6a"
-              color="#fff"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={playNext}>
-            <Ionicons
-              name="play-skip-forward-sharp"
-              size={45}
-              color="#d3d3d3"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.player_bottom_container}>
-        <TouchableOpacity style={styles.touchable_opacity} onPress={repeatMode}>
-          <MaterialCommunityIcons
-            name={`${shuffleIcon()}`}
-            size={31}
-            color={repeat === 'off' ? '#d3d3d3' : '#1db954'}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.touchable_opacity}
-          onPress={() => navigation.navigate('Lyrics')}>
-          <Ionicons name="document-text" size={29} color="#d3d3d3" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.touchable_opacity}
-          onPress={() => navigation.navigate('Playlist')}>
-          <MaterialCommunityIcons
-            name="playlist-music"
-            size={31}
-            color="#D3D3D3"
-          />
-        </TouchableOpacity>
-      </View>
+      ) : (
+        <MainPlayer />
+      )}
     </SafeAreaView>
   );
 }
@@ -230,5 +254,10 @@ const styles = StyleSheet.create({
   song_duration: {
     fontSize: 12,
     color: '#D3D3D3',
+  },
+  loading_container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

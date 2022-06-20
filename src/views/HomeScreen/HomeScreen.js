@@ -30,7 +30,7 @@ function HomeScreen({navigation}) {
       </View>
       <View style={styles.btnContainer}>
         <View style={styles.loadingContainer}>
-          {isLoading ? <RenderLoader /> : <Text> </Text>}
+          {isLoading ? <RenderLoader /> : null}
         </View>
         <Button
           title="Songs of psalm"
@@ -38,7 +38,6 @@ function HomeScreen({navigation}) {
           IonicIconSize={35}
           btnDescripton="Tap to listen songs"
           onPress={() => navigation.navigate('Songs')}
-          Disable={isLoading ? true : false}
         />
         <Button
           title="Book of Psalm"
@@ -52,7 +51,7 @@ function HomeScreen({navigation}) {
           IonicIconName="md-information-circle-outline"
           IonicIconSize={35}
           btnDescripton="Tap to view about"
-          onPress={() => navigation.navigate('About')}
+          // onPress={() => navigation.navigate('About')}
         />
       </View>
       <View style={styles.rateContainer}>
@@ -75,8 +74,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   headerContainer: {
-    width: '90%',
-    flex: 2,
+    width: '100%',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     margin: 10,
@@ -108,8 +107,8 @@ const styles = StyleSheet.create({
   rateText: {color: 'grey', fontSize: 13},
   loadingContainer: {
     width: '90%',
-    height: 25,
-    padding: 5,
+    height: 33,
+    padding: 10,
   },
   loadingText: {color: '#5e8d6a', fontSize: 11, marginLeft: 5},
 });

@@ -1,8 +1,14 @@
-import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const Button = ({
+const ButtonBook = ({
   title,
   onPress,
   IonicIconName,
@@ -31,15 +37,16 @@ const Button = ({
   );
 };
 
-export default Button;
+export default ButtonBook;
 
 const styles = StyleSheet.create({
   btnContainer: {
     flexDirection: 'row',
     width: '90%',
-    height: '29%',
+    height: 100,
     backgroundColor: '#171717',
     paddingVertical: 10,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
@@ -49,7 +56,8 @@ const styles = StyleSheet.create({
   btnIcon: {padding: 9},
   btnTextView: {width: '70%'},
   btnText: {
-    fontSize: 17,
+    fontSize: 14,
+    // fontWeight: 'bold',
     color: '#D3D3D3',
     textTransform: 'uppercase',
   },

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, {useContext} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Button from '../../component/Button/Button';
+import ButtonBook from '../../component/ButtonBook/ButtonBook';
 import {Contextprovider} from '../../Context/Context';
 
 const renderItem = ({item}) => {
@@ -48,7 +48,7 @@ const BookScreen = ({navigation}) => {
             renderItem={({item}) => {
               return (
                 <View style={{marginVertical: 3, alignItems: 'center'}}>
-                  <Button
+                  <ButtonBook
                     title={item.title}
                     btnDescripton="রাজা দাউদ নবীর জীবনী"
                     IonicIconName="ios-book"

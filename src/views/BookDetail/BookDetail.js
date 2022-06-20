@@ -21,7 +21,7 @@ const BookDetail = ({route, navigation}) => {
   const {book} = context;
 
   // Scrolling amimation when scroll down
-  const srollHeightY = 60;
+  const srollHeightY = 100;
   const scrollY = new Animated.Value(0);
   const diffClampScrollY = Animated.diffClamp(scrollY, 0, srollHeightY);
   const translateY = diffClampScrollY.interpolate({
@@ -53,6 +53,20 @@ const BookDetail = ({route, navigation}) => {
     }
   };
 
+  const BlockRenderer = props => {
+    const {style = 'normal'} = props.node;
+
+    if (style === 'normal') {
+      return (
+        <View>
+          <Text style={{textAlign: 'justify', fontSize: 17}}>
+            {props.children}
+          </Text>
+        </View>
+      );
+    }
+  };
+
   return (
     <>
       <SafeAreaView>
@@ -66,21 +80,28 @@ const BookDetail = ({route, navigation}) => {
             <Text style={styles.headerText}>{item.title}</Text>
           </View>
         </View>
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
           <ScrollView
             style={{width: '95%'}}
             showsVerticalScrollIndicator={false}
             onScroll={e => {
               scrollY.setValue(e.nativeEvent.contentOffset.y);
             }}>
-            <BlockContent blocks={item.bookDescription} />
+            <BlockContent
+              blocks={item.bookDescription}
+              serializers={{types: {block: BlockRenderer}}}
+            />
           </ScrollView>
         </View>
       </SafeAreaView>
       <Animated.View
         style={{
           position: 'absolute',
-          bottom: 0,
+          bottom: 10,
           left: 0,
           right: 0,
           transform: [{translateY}],
@@ -96,12 +117,12 @@ export default BookDetail;
 // styles array of objects
 const styles = StyleSheet.create({
   go_back_frm_books: {
-    backgroundColor: '#000',
+    backgroundColor: '#171717',
     flexDirection: 'row',
     alignItems: 'center',
   },
   headerText: {
-    fontSize: 17,
+    fontSize: 12,
     color: '#d3d3d3',
     alignSelf: 'center',
   },
