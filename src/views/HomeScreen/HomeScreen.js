@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import React, {useContext} from 'react';
 import Button from '../../component/Button/Button';
@@ -23,37 +24,50 @@ function HomeScreen({navigation}) {
       </View>
     );
   };
+  const iconSize = 37;
+
   return (
     <SafeAreaView style={styles.homeContainer}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Wellcome to songs of psalm</Text>
+        <Text style={styles.headerText}>Welcome to book</Text>
+        <Text style={styles.headerText}>of Psalm and songs</Text>
       </View>
-      <View style={styles.btnContainer}>
+      <ScrollView
+        contentContainerStyle={styles.btnContainer}
+        showsVerticalScrollIndicator={false}
+        stickyHeaderIndices={[0]}>
         <View style={styles.loadingContainer}>
           {isLoading ? <RenderLoader /> : null}
         </View>
         <Button
-          title="Songs of psalm"
-          IonicIconName="musical-note-outline"
-          IonicIconSize={35}
-          btnDescripton="Tap to listen songs"
-          onPress={() => navigation.navigate('Songs')}
-        />
-        <Button
-          title="Book of Psalm"
+          title="রাজা দাউদের জীবনী"
           IonicIconName="book-outline"
-          IonicIconSize={35}
+          IonicIconSize={iconSize}
           btnDescripton="Tap to read books"
           onPress={() => navigation.navigate('Books')}
         />
         <Button
-          title="About"
+          title="জবুর গীতসংহিতা"
+          IonicIconName="musical-note-outline"
+          IonicIconSize={iconSize}
+          btnDescripton="Tap to listen songs"
+          onPress={() => navigation.navigate('Songs')}
+        />
+        <Button
+          title="নবী দাউদ-এর গীত (গীতসংহিতা)"
+          IonicIconName="ios-book"
+          IonicIconSize={iconSize}
+          btnDescripton="গীতসংহিতা"
+          onPress={() => navigation.navigate('Gitsonghita')}
+        />
+        <Button
+          title="পরিচিতি"
           IonicIconName="md-information-circle-outline"
-          IonicIconSize={35}
+          IonicIconSize={iconSize}
           btnDescripton="Tap to view about"
           // onPress={() => navigation.navigate('About')}
         />
-      </View>
+      </ScrollView>
       <View style={styles.rateContainer}>
         <TouchableOpacity style={styles.rateButton}>
           <Text style={styles.rateText}>Rate this app</Text>
@@ -75,7 +89,6 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     width: '100%',
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     margin: 10,
@@ -87,12 +100,10 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     width: '100%',
-    flex: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   rateContainer: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
     width: '90%',

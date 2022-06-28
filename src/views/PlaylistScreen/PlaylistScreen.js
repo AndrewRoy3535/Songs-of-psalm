@@ -74,9 +74,9 @@ function PlaylistScreen({navigation}) {
             style={styles.palylist_search_icon}
           />
           <TextInput
-            placeholder="Search"
+            placeholder="Search, Exa: B100"
             placeholderTextColor="#fff"
-            style={{color: '#fff', width: '85%'}}
+            style={{color: '#fff', width: '85%', fontStyle: 'italic'}}
             value={audioSearch}
             onChangeText={text => onSearchEnter(text)}
           />

@@ -37,13 +37,6 @@ function SongsScreen({navigation}) {
 
   let progress = useProgress();
 
-  // useEffect(() => {
-  //   if (audio.length) {
-  //     playerSetup();
-  //     setState({...context, isLoading: false});
-  //   }
-  // }, [audio]);
-
   function MainPlayer() {
     return (
       <>
@@ -155,10 +148,13 @@ function SongsScreen({navigation}) {
 
 export default SongsScreen;
 
+const widthandheight = 290;
+const backgroundColor = '#171717';
+
 const styles = StyleSheet.create({
   playerContainer: {
     flex: 1,
-    backgroundColor: '#171717',
+    backgroundColor: backgroundColor,
     // backgroundColor: '#5e8d6a',
   },
 
@@ -191,25 +187,27 @@ const styles = StyleSheet.create({
   },
 
   player_art_img_container: {
-    flex: 5,
-    width: '80%',
-    alignItems: 'center',
-    // backgroundColor: '#fff',
+    // flex: 4,
+    width: widthandheight,
+    height: widthandheight,
+    backgroundColor: backgroundColor,
+    borderRadius: 13,
+    // add shadows for Android only
+    elevation: 10,
+
+    // add shadows for iOS only
+    shadowColor: '#d3d3d3',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
   },
 
   player_art_img: {
-    width: 290,
-    height: 290,
-    borderRadius: 10,
-    marginTop: 10,
-    shadowColor: '#ccc',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-
-    shadowOpacity: 0.4,
-    shadowRadius: 2,
+    width: widthandheight,
+    height: widthandheight,
+    borderRadius: 11,
+    // marginTop: 10,
+    resizeMode: 'stretch',
   },
 
   song_title: {

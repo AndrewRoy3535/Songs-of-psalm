@@ -7,7 +7,9 @@ import BookScreen from './src/views/BookScreen/BookScreen';
 import AboutScreen from './src/views/AboutScreen/AboutScreen';
 import PlaylistScreen from './src/views/PlaylistScreen/PlaylistScreen';
 import BookDetail from './src/views/BookDetail/BookDetail';
+import GitsonghitaScreen from './src/views/Gitsonghita/GitsonghitaScreen';
 import Lyrics from './src/component/Lyrics/Lyrics';
+import GitDetails from './src/views/GitDetails/GitDetails';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Context from './src/Context/Context';
 
@@ -29,6 +31,8 @@ const App = () => {
           <Stack.Screen name="Playlist" component={PlaylistScreen} />
           <Stack.Screen name="Lyrics" component={Lyrics} />
           <Stack.Screen name="BookDetail" component={BookDetail} />
+          <Stack.Screen name="Gitsonghita" component={GitsonghitaScreen} />
+          <Stack.Screen name="GitDetails" component={GitDetails} />
         </Stack.Navigator>
       </NavigationContainer>
     </Context>

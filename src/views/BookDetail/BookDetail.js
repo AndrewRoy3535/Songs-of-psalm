@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Button,
   Animated,
+  FlatList,
 } from 'react-native';
 import React, {useContext} from 'react';
 const BlockContent = require('@sanity/block-content-to-react');
@@ -18,7 +19,7 @@ import FAB from '../../component/Fab/Fab';
 const BookDetail = ({route, navigation}) => {
   const {item} = route.params;
   const context = useContext(Contextprovider);
-  const {book} = context;
+  const {book, goToNextBook, goToPreviousBook} = context;
 
   // Scrolling amimation when scroll down
   const srollHeightY = 100;
@@ -29,37 +30,67 @@ const BookDetail = ({route, navigation}) => {
     outputRange: [0, srollHeightY],
   });
 
-  // go to the next book
-  const goToNextBook = () => {
-    const index = book.findIndex(book => book._id === item._id);
-    const nextBook = book[index + 1];
-    if (nextBook) {
-      navigation.navigate('BookDetail', {item: nextBook});
-    } else {
-      navigation.navigate('BookDetail', {item: book[0]});
-      // navigation.navigate('Books');
-    }
-  };
-
-  // go to the previous book
-  const goToPreviousBook = () => {
-    const index = book.findIndex(book => book._id === item._id);
-    const previousBook = book[index - 1];
-    if (previousBook) {
-      navigation.navigate('BookDetail', {item: previousBook});
-    } else {
-      navigation.navigate('BookDetail', {item: book[book.length - 1]});
-      // navigation.navigate('Books');
-    }
-  };
-
   const BlockRenderer = props => {
     const {style = 'normal'} = props.node;
 
     if (style === 'normal') {
       return (
-        <View>
-          <Text style={{textAlign: 'justify', fontSize: 17}}>
+        <View style={{backgroundColor: '#d3d3d3', padding: 15}}>
+          <Text style={{textAlign: 'justify', fontSize: 19, color: '#171717'}}>
+            {props.children}
+          </Text>
+        </View>
+      );
+    }
+    if (style === 'h3') {
+      return (
+        <View style={{backgroundColor: '#d3d3d3', padding: 15}}>
+          <Text style={{textAlign: 'center', fontSize: 19, color: '#171717'}}>
+            {props.children}
+          </Text>
+        </View>
+      );
+    }
+    if (style === 'h1') {
+      return (
+        <View style={{backgroundColor: '#d3d3d3', padding: 15}}>
+          <Text style={{textAlign: 'center', fontSize: 19, color: '#171717'}}>
+            {props.children}
+          </Text>
+        </View>
+      );
+    }
+    if (style === 'h2') {
+      return (
+        <View style={{backgroundColor: '#d3d3d3', padding: 15}}>
+          <Text style={{textAlign: 'center', fontSize: 19, color: '#171717'}}>
+            {props.children}
+          </Text>
+        </View>
+      );
+    }
+    if (style === 'h4') {
+      return (
+        <View style={{backgroundColor: '#d3d3d3', padding: 15}}>
+          <Text style={{textAlign: 'center', fontSize: 19, color: '#171717'}}>
+            {props.children}
+          </Text>
+        </View>
+      );
+    }
+    if (style === 'h5') {
+      return (
+        <View style={{backgroundColor: '#d3d3d3', padding: 15}}>
+          <Text style={{textAlign: 'center', fontSize: 19, color: '#171717'}}>
+            {props.children}
+          </Text>
+        </View>
+      );
+    }
+    if (style === 'h6') {
+      return (
+        <View style={{backgroundColor: '#d3d3d3', padding: 15}}>
+          <Text style={{textAlign: 'center', fontSize: 19, color: '#171717'}}>
             {props.children}
           </Text>
         </View>
@@ -81,12 +112,25 @@ const BookDetail = ({route, navigation}) => {
           </View>
         </View>
         <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <ScrollView
-            style={{width: '95%'}}
+        // style={{
+        //   justifyContent: 'center',
+        //   alignItems: 'center',
+        // }}
+        >
+          <FlatList
+            onScroll={e => {
+              scrollY.setValue(e.nativeEvent.contentOffset.y);
+            }}
+            showsVerticalScrollIndicator={false}
+            data={item.bookDescription}
+            renderItem={item => (
+              <BlockContent
+                blocks={item.item}
+                serializers={{types: {block: BlockRenderer}}}
+              />
+            )}
+          />
+          {/* <ScrollView
             showsVerticalScrollIndicator={false}
             onScroll={e => {
               scrollY.setValue(e.nativeEvent.contentOffset.y);
@@ -95,18 +139,26 @@ const BookDetail = ({route, navigation}) => {
               blocks={item.bookDescription}
               serializers={{types: {block: BlockRenderer}}}
             />
-          </ScrollView>
+          </ScrollView> */}
         </View>
       </SafeAreaView>
       <Animated.View
         style={{
           position: 'absolute',
-          bottom: 10,
           left: 0,
           right: 0,
+          bottom: 27,
+          alignItems: 'center',
           transform: [{translateY}],
         }}>
-        <FAB goToNextBook={goToNextBook} goToPreviousBook={goToPreviousBook} />
+        <FAB
+          goToNextBook={() =>
+            goToNextBook(book, item, 'BookDetail', navigation)
+          }
+          goToPreviousBook={() =>
+            goToPreviousBook(book, item, 'BookDetail', navigation)
+          }
+        />
       </Animated.View>
     </>
   );

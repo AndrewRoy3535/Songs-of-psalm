@@ -19,6 +19,7 @@ export function Context({children}) {
     audioSearch: '',
     repeat: 'off',
     book: [],
+    gitSonghita,
   });
 
   const {
@@ -30,6 +31,7 @@ export function Context({children}) {
     audioSearch,
     repeat,
     book,
+    gitSonghita,
   } = state;
 
   // async function fetchData() {
@@ -40,9 +42,17 @@ export function Context({children}) {
   async function fetchData() {
     const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
     const query1 = `*[_type == "bookOfpsalm"] {_id, title, bookNo, bookDescription} | order(bookNo)`;
+    const query2 = `*[_type == "gitsonghita"] {_id, title, bookNo, bookDescription} | order(bookNo)`;
     const result = await sanity.fetch(query);
     const result1 = await sanity.fetch(query1);
-    setState({...state, audio: result, audioFilter: result, book: result1});
+    const result2 = await sanity.fetch(query2);
+    setState({
+      ...state,
+      audio: result,
+      audioFilter: result,
+      book: result1,
+      gitSonghita: result2,
+    });
   }
 
   useEffect(() => {
@@ -58,9 +68,18 @@ export function Context({children}) {
   }, [audio]);
 
   // Setup player for the first time
+  // async function playerSetup() {
+  //   await TrackPlayer.setupPlayer();
+  //   await TrackPlayer.add(audioFilter);
+  // }
+
   async function playerSetup() {
-    await TrackPlayer.setupPlayer();
-    await TrackPlayer.add(audioFilter);
+    try {
+      await TrackPlayer.setupPlayer();
+      await TrackPlayer.add(audioFilter);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // Play or puse song by toggling...
@@ -152,6 +171,32 @@ export function Context({children}) {
     }
   }
 
+  // go to the next book
+  const goToNextBook = (context, item, navScreen, navigation) => {
+    const index = context.findIndex(context => context._id === item._id);
+    const nextBook = context[index + 1];
+    if (nextBook) {
+      navigation.navigate(navScreen, {item: nextBook});
+    } else {
+      navigation.navigate(navScreen, {item: context[0]});
+      // navigation.navigate('Books');
+    }
+  };
+
+  // go to the previous book
+  const goToPreviousBook = (context, item, navScreen, navigation) => {
+    const index = context.findIndex(context => context._id === item._id);
+    const previousBook = context[index - 1];
+    if (previousBook) {
+      navigation.navigate(navScreen, {item: previousBook});
+    } else {
+      navigation.navigate(navScreen, {
+        item: context[context.length - 1],
+      });
+      // navigation.navigate('Books');
+    }
+  };
+
   function repeatMode() {
     if (repeat === 'off') {
       TrackPlayer.setRepeatMode(RepeatMode.Track);
@@ -189,6 +234,7 @@ export function Context({children}) {
         audioSearch,
         repeat,
         book,
+        gitSonghita,
         setState,
         formatTime,
         totalTime,
@@ -201,6 +247,8 @@ export function Context({children}) {
         repeatMode,
         shuffleIcon,
         onSearchEnter,
+        goToNextBook,
+        goToPreviousBook,
       }}>
       {children}
     </Contextprovider.Provider>
