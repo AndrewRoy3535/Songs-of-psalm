@@ -19,7 +19,7 @@ export function Context({children}) {
     audioSearch: '',
     repeat: 'off',
     book: [],
-    gitSonghita,
+    gitSonghita: [],
   });
 
   const {
@@ -34,11 +34,6 @@ export function Context({children}) {
     gitSonghita,
   } = state;
 
-  // async function fetchData() {
-  //   const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
-  //   const result = await sanity.fetch(query);
-  //   setState({...state, audio: result, audioFilter: result});
-  // }
   async function fetchData() {
     const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
     const query1 = `*[_type == "bookOfpsalm"] {_id, title, bookNo, bookDescription} | order(bookNo)`;
@@ -66,12 +61,6 @@ export function Context({children}) {
       setState({...state, isLoading: false});
     }
   }, [audio]);
-
-  // Setup player for the first time
-  // async function playerSetup() {
-  //   await TrackPlayer.setupPlayer();
-  //   await TrackPlayer.add(audioFilter);
-  // }
 
   async function playerSetup() {
     try {

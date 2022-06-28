@@ -12,20 +12,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import ButtonBook from '../../component/ButtonBook/ButtonBook';
 import {Contextprovider} from '../../Context/Context';
 
-const renderItem = ({item}) => {
-  return (
-    <View style={{marginVertical: 3, alignItems: 'center'}}>
-      <Button
-        title={item.title}
-        btnDescripton="রাজা দাউদ নবীর জীবনী"
-        IonicIconName="ios-book"
-        IonicIconSize={29}
-        onPress={() => navigation.navigate('BookDetail')}
-      />
-    </View>
-  );
-};
-
 const GitsonghitaScreen = ({navigation}) => {
   const context = useContext(Contextprovider);
   const {gitSonghita} = context;

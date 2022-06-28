@@ -9,7 +9,7 @@ import {
   Animated,
   FlatList,
 } from 'react-native';
-import React, {useContext} from 'react';
+import React, {useContext, useCallback} from 'react';
 const BlockContent = require('@sanity/block-content-to-react');
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {PortableText} from '@portabletext/react';
@@ -98,8 +98,6 @@ const GitDetails = ({route, navigation}) => {
     }
   };
 
-  // console.log(item);
-
   return (
     <>
       <SafeAreaView>
@@ -113,12 +111,7 @@ const GitDetails = ({route, navigation}) => {
             <Text style={styles.headerText}>{item.title}</Text>
           </View>
         </View>
-        <View
-        // style={{
-        //   justifyContent: 'center',
-        //   alignItems: 'center',
-        // }}
-        >
+        <View>
           <FlatList
             onScroll={e => {
               scrollY.setValue(e.nativeEvent.contentOffset.y);
@@ -131,18 +124,8 @@ const GitDetails = ({route, navigation}) => {
                 serializers={{types: {block: BlockRenderer}}}
               />
             )}
+            keyExtractor={item => item._key}
           />
-
-          {/* <ScrollView
-            showsVerticalScrollIndicator={false}
-            onScroll={e => {
-              scrollY.setValue(e.nativeEvent.contentOffset.y);
-            }}>
-            <BlockContent
-              blocks={item.bookDescription}
-              serializers={{types: {block: BlockRenderer}}}
-            />
-          </ScrollView> */}
         </View>
       </SafeAreaView>
       <Animated.View

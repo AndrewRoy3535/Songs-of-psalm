@@ -111,12 +111,7 @@ const BookDetail = ({route, navigation}) => {
             <Text style={styles.headerText}>{item.title}</Text>
           </View>
         </View>
-        <View
-        // style={{
-        //   justifyContent: 'center',
-        //   alignItems: 'center',
-        // }}
-        >
+        <View>
           <FlatList
             onScroll={e => {
               scrollY.setValue(e.nativeEvent.contentOffset.y);
@@ -129,17 +124,8 @@ const BookDetail = ({route, navigation}) => {
                 serializers={{types: {block: BlockRenderer}}}
               />
             )}
+            keyExtractor={item => item._key}
           />
-          {/* <ScrollView
-            showsVerticalScrollIndicator={false}
-            onScroll={e => {
-              scrollY.setValue(e.nativeEvent.contentOffset.y);
-            }}>
-            <BlockContent
-              blocks={item.bookDescription}
-              serializers={{types: {block: BlockRenderer}}}
-            />
-          </ScrollView> */}
         </View>
       </SafeAreaView>
       <Animated.View
