@@ -29,8 +29,9 @@ function HomeScreen({navigation}) {
   return (
     <SafeAreaView style={styles.homeContainer}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Welcome to book</Text>
-        <Text style={styles.headerText}>of Psalm and songs</Text>
+        <Text style={styles.headerText}>Welcome to</Text>
+        <Text style={styles.headerText}>Book of Psalms,</Text>
+        <Text style={styles.headerText}>life of King David & Songs</Text>
       </View>
       <ScrollView
         contentContainerStyle={styles.btnContainer}
@@ -47,25 +48,25 @@ function HomeScreen({navigation}) {
           onPress={() => navigation.navigate('Books')}
         />
         <Button
-          title="জবুর গীতসংহিতা"
-          IonicIconName="musical-note-outline"
-          IonicIconSize={iconSize}
-          btnDescripton="Tap to listen songs"
-          onPress={() => navigation.navigate('Songs')}
-        />
-        <Button
-          title="নবী দাউদ-এর গীত (গীতসংহিতা)"
+          title="জবুর শরীফ (গীতসংহিতা)"
           IonicIconName="ios-book"
           IonicIconSize={iconSize}
           btnDescripton="গীতসংহিতা"
           onPress={() => navigation.navigate('Gitsonghita')}
         />
         <Button
+          title="নবী দাউদের গীত"
+          IonicIconName="musical-note-outline"
+          IonicIconSize={iconSize}
+          btnDescripton="Tap to listen songs"
+          onPress={() => navigation.navigate('Songs')}
+        />
+        <Button
           title="পরিচিতি"
           IonicIconName="md-information-circle-outline"
           IonicIconSize={iconSize}
           btnDescripton="Tap to view about"
-          // onPress={() => navigation.navigate('About')}
+          onPress={() => navigation.navigate('About')}
         />
       </ScrollView>
       <View style={styles.rateContainer}>
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   headerText: {
-    fontSize: 33,
+    fontSize: 25,
     fontFamily: 'DancingScript-Bold',
     color: '#5e8d6a',
   },

@@ -1,4 +1,4 @@
-package com.songs_of_psalm.newarchitecture;
+package isae.songs.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.songs_of_psalm.BuildConfig;
-import com.songs_of_psalm.newarchitecture.components.MainComponentsRegistry;
-import com.songs_of_psalm.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import isae.songs.BuildConfig;
+import isae.songs.newarchitecture.components.MainComponentsRegistry;
+import isae.songs.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

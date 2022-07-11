@@ -1,4 +1,4 @@
-package com.songs_of_psalm.newarchitecture.modules;
+package isae.songs.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

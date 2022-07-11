@@ -6,6 +6,8 @@ import TrackPlayer, {
   useTrackPlayerEvents,
   RepeatMode,
 } from 'react-native-track-player';
+import storage from '../lib/storage';
+import {Alert, BackHandler} from 'react-native';
 
 export const Contextprovider = createContext();
 
@@ -20,6 +22,7 @@ export function Context({children}) {
     repeat: 'off',
     book: [],
     gitSonghita: [],
+    introduction: [],
   });
 
   const {
@@ -32,22 +35,35 @@ export function Context({children}) {
     repeat,
     book,
     gitSonghita,
+    introduction,
   } = state;
 
   async function fetchData() {
-    const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
-    const query1 = `*[_type == "bookOfpsalm"] {_id, title, bookNo, bookDescription} | order(bookNo)`;
-    const query2 = `*[_type == "gitsonghita"] {_id, title, bookNo, bookDescription} | order(bookNo)`;
-    const result = await sanity.fetch(query);
-    const result1 = await sanity.fetch(query1);
-    const result2 = await sanity.fetch(query2);
-    setState({
-      ...state,
-      audio: result,
-      audioFilter: result,
-      book: result1,
-      gitSonghita: result2,
-    });
+    try {
+      const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
+      const query1 = `*[_type == "bookOfpsalm"] {_id, title, bookNo, bookDescription} | order(bookNo asc)`;
+      const query2 = `*[_type == "gitsonghita"] {_id, title, bookNo, bookDescription} | order(bookNo asc)`;
+      const query3 = `*[_type == "introduction"] {_id, title, details}`;
+      const result2 = await sanity.fetch(query2);
+      const result = await sanity.fetch(query);
+      const result1 = await sanity.fetch(query1);
+      const result3 = await sanity.fetch(query3);
+      setState({
+        ...state,
+        audio: result,
+        audioFilter: result,
+        book: result1,
+        gitSonghita: result2,
+        introduction: result3,
+      });
+    } catch (e) {
+      // console.log(e.isNetworkError);
+      Alert.alert(
+        'Connection Error',
+        'Please connect to the network then try again.',
+        [{text: 'Exit', onPress: () => BackHandler.exitApp()}],
+      );
+    }
   }
 
   useEffect(() => {
@@ -67,7 +83,11 @@ export function Context({children}) {
       await TrackPlayer.setupPlayer();
       await TrackPlayer.add(audioFilter);
     } catch (error) {
-      console.log(error);
+      Alert.alert(
+        'Player Error',
+        'Player got disconnected. Try reloading the app.',
+        [{text: 'Exit', onPress: () => BackHandler.exitApp()}],
+      );
     }
   }
 
@@ -224,6 +244,7 @@ export function Context({children}) {
         repeat,
         book,
         gitSonghita,
+        introduction,
         setState,
         formatTime,
         totalTime,

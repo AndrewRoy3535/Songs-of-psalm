@@ -43,7 +43,7 @@ function SongsScreen({navigation}) {
         <View style={styles.main_player_container}>
           <View style={styles.player_art_img_container}>
             <Image
-              source={require('../../assets/images/album_art_1.jpg')}
+              source={require('../../assets/images/album_art.png')}
               style={styles.player_art_img}
             />
           </View>

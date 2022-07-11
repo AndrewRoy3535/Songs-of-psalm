@@ -1,4 +1,4 @@
-package com.songs_of_psalm.newarchitecture.components;
+package isae.songs.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

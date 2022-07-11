@@ -1,4 +1,4 @@
-package com.songs_of_psalm;
+package isae.songs;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

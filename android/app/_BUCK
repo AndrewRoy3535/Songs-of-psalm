@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.songs_of_psalm",
+    package = "isae.songs",
 )
 
 android_resource(
     name = "res",
-    package = "com.songs_of_psalm",
+    package = "isae.songs",
     res = "src/main/res",
 )
 
