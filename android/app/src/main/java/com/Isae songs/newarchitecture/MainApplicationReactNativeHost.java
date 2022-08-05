@@ -1,4 +1,4 @@
-package isae.songs.newarchitecture;
+package com.jaburandsongs.app.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import isae.songs.BuildConfig;
-import isae.songs.newarchitecture.components.MainComponentsRegistry;
-import isae.songs.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.jaburandsongs.app.BuildConfig;
+import com.jaburandsongs.app.newarchitecture.components.MainComponentsRegistry;
+import com.jaburandsongs.app.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

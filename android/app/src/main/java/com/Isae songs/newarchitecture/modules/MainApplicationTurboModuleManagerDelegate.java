@@ -1,4 +1,4 @@
-package isae.songs.newarchitecture.modules;
+package com.jaburandsongs.app.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

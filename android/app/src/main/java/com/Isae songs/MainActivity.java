@@ -1,4 +1,4 @@
-package isae.songs;
+package com.jaburandsongs.app;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
