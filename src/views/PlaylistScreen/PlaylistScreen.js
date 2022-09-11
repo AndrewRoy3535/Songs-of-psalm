@@ -25,6 +25,7 @@ function PlaylistScreen({navigation}) {
     setState,
     audioSearch,
     onSearchEnter,
+    testbook,
   } = context;
 
   function renderItem(item) {

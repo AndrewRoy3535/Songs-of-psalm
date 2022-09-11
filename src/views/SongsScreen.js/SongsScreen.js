@@ -13,7 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Slider from '@react-native-community/slider';
 import {Contextprovider} from '../../Context/Context';
-import {useProgress} from 'react-native-track-player';
+import {useProgress, State} from 'react-native-track-player';
 
 function SongsScreen({navigation}) {
   const context = useContext(Contextprovider);
@@ -33,11 +33,21 @@ function SongsScreen({navigation}) {
     repeatMode,
     playerSetup,
     shuffleIcon,
+    testbook,
+    playerState,
   } = context;
 
   let progress = useProgress();
 
+  useEffect(() => {
+    if (audio.length < 0) {
+      playerSetup();
+      setState({...state, isLoading: false});
+    }
+  }, [audio]);
+
   function MainPlayer() {
+    const isPlaying = playerState === State.Playing;
     return (
       <>
         <View style={styles.main_player_container}>
@@ -79,9 +89,7 @@ function SongsScreen({navigation}) {
               onPress={() => togglePlay()}>
               <Ionicons
                 name={
-                  togglePlaybtn
-                    ? 'ios-pause-circle-sharp'
-                    : 'ios-play-circle-sharp'
+                  isPlaying ? 'ios-pause-circle-sharp' : 'ios-play-circle-sharp'
                 }
                 size={85}
                 // color="#5e8d6a"
@@ -135,13 +143,14 @@ function SongsScreen({navigation}) {
           <AntDesign name="left" size={25} color="#D3D3D3" />
         </TouchableOpacity>
       </View>
-      {isLoading ? (
+      {/* {isLoading ? (
         <View style={styles.loading_container}>
           <ActivityIndicator size="large" color="#1db954" />
         </View>
       ) : (
         <MainPlayer />
-      )}
+        )} */}
+      <MainPlayer />
     </SafeAreaView>
   );
 }

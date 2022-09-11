@@ -1,13 +1,15 @@
-import React, {createContext, useState, useEffect} from 'react';
+import React, {createContext, useState, useEffect, useRef} from 'react';
 import sanity from '../lib/sanity';
 import TrackPlayer, {
   State,
   Event,
   useTrackPlayerEvents,
   RepeatMode,
+  Capability,
 } from 'react-native-track-player';
 import storage from '../lib/storage';
-import {Alert, BackHandler} from 'react-native';
+import {AppState} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Contextprovider = createContext();
 
@@ -23,6 +25,8 @@ export function Context({children}) {
     book: [],
     gitSonghita: [],
     introduction: [],
+    playerState: null,
+    testbook: [],
   });
 
   const {
@@ -36,6 +40,8 @@ export function Context({children}) {
     book,
     gitSonghita,
     introduction,
+    playerState,
+    testbook,
   } = state;
 
   async function fetchData() {
@@ -48,6 +54,7 @@ export function Context({children}) {
       const result = await sanity.fetch(query);
       const result1 = await sanity.fetch(query1);
       const result3 = await sanity.fetch(query3);
+      // await AsyncStorage.setItem('@book', JSON.stringify(result1));
       setState({
         ...state,
         audio: result,
@@ -57,16 +64,30 @@ export function Context({children}) {
         introduction: result3,
       });
     } catch (e) {
-      // console.log(e.isNetworkError);
-      Alert.alert(
-        'Connection Error',
-        'Please connect to the network then try again.',
-        [{text: 'Exit', onPress: () => BackHandler.exitApp()}],
-      );
+      console.log(e.isNetworkError, 'network error');
+      // Alert.alert(
+      //   'Connection Error',
+      //   'Please connect to the network then try again.',
+      //   [{text: 'Exit', onPress: () => BackHandler.exitApp()}],
+      // );
     }
   }
 
+  // const getData = async () => {
+  //   try {
+  //     const jsonValue = await AsyncStorage.getItem('@book');
+  //     jsonValue != null ? JSON.parse(jsonValue) : null;
+  //     // console.log(jsonValue, 'jsonValue');
+  //     setState({...state, testbook: JSON.parse(jsonValue)});
+  //   } catch (e) {
+  //     console.log(e, 'error');
+  //   }
+  // };
+
+  // console.log(testbook, 'testbook');
+
   useEffect(() => {
+    // getData();
     fetchData();
     return () => fetchData();
   }, []);
@@ -83,11 +104,12 @@ export function Context({children}) {
       await TrackPlayer.setupPlayer();
       await TrackPlayer.add(audioFilter);
     } catch (error) {
-      Alert.alert(
-        'Player Error',
-        'Player got disconnected. Try reloading the app.',
-        [{text: 'Exit', onPress: () => BackHandler.exitApp()}],
-      );
+      console.log(error);
+      // Alert.alert(
+      //   'Player Error',
+      //   'Player got disconnected. Try reloading the app.',
+      //   [{text: 'Exit', onPress: () => BackHandler.exitApp()}],
+      // );
     }
   }
 
@@ -99,12 +121,15 @@ export function Context({children}) {
     } else {
       await TrackPlayer.pause();
     }
+    TrackPlayer.updateOptions({
+      capabilities: [Capability.Play, Capability.Pause, Capability.Stop],
+    });
     setState({...state, togglePlaybtn: !togglePlaybtn});
   }
 
   // state events listener
   useTrackPlayerEvents(
-    [Event.PlaybackTrackChanged, Event.PlaybackQueueEnded],
+    [Event.PlaybackTrackChanged, Event.PlaybackQueueEnded, Event.PlaybackState],
     async event => {
       if (
         event.type === Event.PlaybackTrackChanged &&
@@ -118,6 +143,9 @@ export function Context({children}) {
       if (event.type === Event.PlaybackQueueEnded) {
         await TrackPlayer.stop();
         setState({...state, togglePlaybtn: false});
+      }
+      if (event.type === Event.PlaybackState) {
+        setState({...state, playerState: event.state});
       }
     },
   );
@@ -245,10 +273,12 @@ export function Context({children}) {
         book,
         gitSonghita,
         introduction,
+        playerState,
+        testbook,
+        playerSetup,
         setState,
         formatTime,
         totalTime,
-        playerSetup,
         playNext,
         playPrevious,
         onSliderComplete,
