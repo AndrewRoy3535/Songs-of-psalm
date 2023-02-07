@@ -48,7 +48,7 @@ export function Context({children}) {
     try {
       const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
       const query1 = `*[_type == "bookOfpsalm"] {_id, title, bookNo, bookDescription} | order(bookNo asc)`;
-      const query2 = `*[_type == "gitsonghita"] {_id, title, bookNo, bookDescription} | order(bookNo asc)`;
+      const query2 = `*[_type == "gitsonghita"] {_id, title, bookNo, orderNo, bookDescription} | order(orderNo asc)`;
       const query3 = `*[_type == "introduction"] {_id, title, details}`;
       const result2 = await sanity.fetch(query2);
       const result = await sanity.fetch(query);
@@ -84,7 +84,7 @@ export function Context({children}) {
   //   }
   // };
 
-  // console.log(testbook, 'testbook');
+  console.log(gitSonghita, 'gitSonghita');
 
   useEffect(() => {
     // getData();
