@@ -7,9 +7,6 @@ import TrackPlayer, {
   RepeatMode,
   Capability,
 } from 'react-native-track-player';
-import storage from '../lib/storage';
-import {AppState} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Contextprovider = createContext();
 
@@ -84,8 +81,6 @@ export function Context({children}) {
   //   }
   // };
 
-  console.log(gitSonghita, 'gitSonghita');
-
   useEffect(() => {
     // getData();
     fetchData();
@@ -105,11 +100,6 @@ export function Context({children}) {
       await TrackPlayer.add(audioFilter);
     } catch (error) {
       console.log(error);
-      // Alert.alert(
-      //   'Player Error',
-      //   'Player got disconnected. Try reloading the app.',
-      //   [{text: 'Exit', onPress: () => BackHandler.exitApp()}],
-      // );
     }
   }
 
