@@ -185,7 +185,7 @@ export function Context({children}) {
   // search audio
   async function onSearchEnter(text) {
     if (text) {
-      newData = audio.filter(item => {
+      let newData = audio.filter(item => {
         const itemData = item.songNo
           ? item.songNo.toUpperCase()
           : ''.toUpperCase();

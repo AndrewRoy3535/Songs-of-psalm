@@ -1,5 +1,4 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import HomeScreen from './src/views/HomeScreen/HomeScreen';
 import SongsScreen from './src/views/SongsScreen.js/SongsScreen';
@@ -40,5 +39,3 @@ const App = () => {
 };
 
 export default App;
-
-const styles = StyleSheet.create({});
