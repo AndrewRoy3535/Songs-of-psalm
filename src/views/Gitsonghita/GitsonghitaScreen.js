@@ -9,13 +9,16 @@ import {
 } from 'react-native';
 import React, {useContext} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import ButtonBook from '../../component/ButtonBook/ButtonBook';
 import {Contextprovider} from '../../Context/Context';
 import GitChapterBtn from '../../component/GitChapterBtn/GitChapterBtn';
 
 const GitsonghitaScreen = ({navigation}) => {
   const context = useContext(Contextprovider);
   const {gitSonghita} = context;
+
+  const Spacingbottom = () => {
+    return <View style={{margin: 50}}></View>;
+  };
 
   return (
     <SafeAreaView style={styles.booklistMainContainer}>
@@ -62,6 +65,7 @@ const GitsonghitaScreen = ({navigation}) => {
               );
             }}
             keyExtractor={item => item._id}
+            ListFooterComponent={<Spacingbottom />}
           />
         </View>
       )}

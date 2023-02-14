@@ -70,17 +70,6 @@ export function Context({children}) {
     }
   }
 
-  // const getData = async () => {
-  //   try {
-  //     const jsonValue = await AsyncStorage.getItem('@book');
-  //     jsonValue != null ? JSON.parse(jsonValue) : null;
-  //     // console.log(jsonValue, 'jsonValue');
-  //     setState({...state, testbook: JSON.parse(jsonValue)});
-  //   } catch (e) {
-  //     console.log(e, 'error');
-  //   }
-  // };
-
   useEffect(() => {
     // getData();
     fetchData();
