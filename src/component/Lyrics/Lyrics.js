@@ -8,13 +8,10 @@ import {
 } from 'react-native';
 import {Contextprovider} from '../../Context/Context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-const BlockContent = require('@sanity/block-content-to-react');
-import {PortableText} from '@portabletext/react';
 
 const Lyrics = ({navigation}) => {
   const context = useContext(Contextprovider);
   const {currentTrack} = context;
-  // console.log('currentTrack', currentTrack);
 
   return (
     <View style={styles.lyricsMainContainer}>

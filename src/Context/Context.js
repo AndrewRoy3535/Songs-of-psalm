@@ -1,4 +1,4 @@
-import React, {createContext, useState, useEffect, useRef} from 'react';
+import React, {createContext, useState, useEffect} from 'react';
 import sanity from '../lib/sanity';
 import TrackPlayer, {
   State,
@@ -43,10 +43,13 @@ export function Context({children}) {
 
   async function fetchData() {
     try {
-      const query = `*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)`;
-      const query1 = `*[_type == "bookOfpsalm"] {_id, title, bookNo, bookDescription} | order(bookNo asc)`;
-      const query2 = `*[_type == "gitsonghita"] {_id, title, bookNo, orderNo, bookDescription} | order(orderNo asc)`;
-      const query3 = `*[_type == "introduction"] {_id, title, details}`;
+      const query =
+        '*[_type == "song"] {title,songNo,filename,lyrics,_id,"url":song.asset->url}| order(songNo asc)';
+      const query1 =
+        '*[_type == "bookOfpsalm"] {_id, title, bookNo, bookDescription} | order(bookNo asc)';
+      const query2 =
+        '*[_type == "gitsonghita"] {_id, title, bookNo, orderNo, bookDescription} | order(orderNo asc)';
+      const query3 = '*[_type == "introduction"] {_id, title, details}';
       const result2 = await sanity.fetch(query2);
       const result = await sanity.fetch(query);
       const result1 = await sanity.fetch(query1);
@@ -59,6 +62,7 @@ export function Context({children}) {
         book: result1,
         gitSonghita: result2,
         introduction: result3,
+        isLoading: false,
       });
     } catch (e) {
       console.log(e.isNetworkError, 'network error');
@@ -102,6 +106,7 @@ export function Context({children}) {
       console.log(error);
     }
   }
+  console.log(audioFilter);
 
   // Play or puse song by toggling...
   async function togglePlay() {
@@ -185,7 +190,7 @@ export function Context({children}) {
   // search audio
   async function onSearchEnter(text) {
     if (text) {
-      newData = audio.filter(item => {
+      let newData = audio.filter(item => {
         const itemData = item.songNo
           ? item.songNo.toUpperCase()
           : ''.toUpperCase();

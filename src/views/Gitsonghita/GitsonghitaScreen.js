@@ -62,6 +62,9 @@ const GitsonghitaScreen = ({navigation}) => {
               );
             }}
             keyExtractor={item => item._id}
+            ListFooterComponent={() => {
+              return <View style={{paddingBottom: 80}} />;
+            }}
           />
         </View>
       )}

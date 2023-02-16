@@ -4,47 +4,26 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
-  Text,
-  ActivityIndicator,
 } from 'react-native';
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Slider from '@react-native-community/slider';
 import {Contextprovider} from '../../Context/Context';
-import {useProgress, State} from 'react-native-track-player';
+import {State} from 'react-native-track-player';
+import SliderBar from '../../component/SliderBar/SliderBar';
 
 function SongsScreen({navigation}) {
   const context = useContext(Contextprovider);
   const {
-    togglePlaybtn,
-    formatTime,
-    totalTime,
     playNext,
     playPrevious,
-    onSliderComplete,
     togglePlay,
-    currentTrack,
-    isLoading,
     repeat,
-    setState,
-    audio,
     repeatMode,
-    playerSetup,
     shuffleIcon,
-    testbook,
     playerState,
   } = context;
-
-  let progress = useProgress();
-
-  useEffect(() => {
-    if (audio.length < 0) {
-      playerSetup();
-      setState({...state, isLoading: false});
-    }
-  }, [audio]);
 
   function MainPlayer() {
     const isPlaying = playerState === State.Playing;
@@ -57,29 +36,7 @@ function SongsScreen({navigation}) {
               style={styles.player_art_img}
             />
           </View>
-          <View style={styles.slider_container}>
-            <Text style={styles.song_title}>
-              {currentTrack.title || 'নবী দাউদের গান'}
-            </Text>
-            <Slider
-              style={{width: '100%', height: 25}}
-              minimumValue={0}
-              maximumValue={progress.duration}
-              value={progress.position}
-              minimumTrackTintColor="#FFFFFF"
-              maximumTrackTintColor="#D3D3D3"
-              thumbTintColor="#1db954"
-              onSlidingComplete={value => onSliderComplete(value)}
-            />
-            <View style={styles.song_duration_container}>
-              <Text style={styles.song_duration}>
-                {totalTime(progress.duration)}
-              </Text>
-              <Text style={styles.song_duration}>
-                {formatTime(progress.position)}
-              </Text>
-            </View>
-          </View>
+          <SliderBar />
           <View style={styles.player_menu_container}>
             <TouchableOpacity onPress={playPrevious}>
               <Ionicons name="play-skip-back-sharp" size={45} color="#d3d3d3" />
@@ -143,13 +100,6 @@ function SongsScreen({navigation}) {
           <AntDesign name="left" size={25} color="#D3D3D3" />
         </TouchableOpacity>
       </View>
-      {/* {isLoading ? (
-        <View style={styles.loading_container}>
-          <ActivityIndicator size="large" color="#1db954" />
-        </View>
-      ) : (
-        <MainPlayer />
-        )} */}
       <MainPlayer />
     </SafeAreaView>
   );

@@ -3,16 +3,13 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  ScrollView,
   TouchableOpacity,
-  Button,
   Animated,
   FlatList,
 } from 'react-native';
 import React, {useContext, useCallback} from 'react';
 const BlockContent = require('@sanity/block-content-to-react');
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {PortableText} from '@portabletext/react';
 import {Contextprovider} from '../../Context/Context';
 import FAB from '../../component/Fab/Fab';
 
