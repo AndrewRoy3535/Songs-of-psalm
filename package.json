@@ -1,6 +1,6 @@
 {
   "name": "jabur_and_songs",
-  "version": "1.0.2",
+  "version": "1.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
