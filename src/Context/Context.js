@@ -106,7 +106,6 @@ export function Context({children}) {
       console.log(error);
     }
   }
-  console.log(audioFilter);
 
   // Play or puse song by toggling...
   async function togglePlay() {
